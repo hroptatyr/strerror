@@ -38,6 +38,8 @@ SXE_CHECK_CC([c11 c1x c99 gnu99])
 SXE_CHECK_CFLAGS
 
 AC_CHECK_HEADERS([errno.h])
+AC_CHECK_HEADERS([string.h])
+AC_CHECK_FUNCS([strerror])
 
 AC_PATH_PROG([GENGETOPT], [gengetopt])
 if test -z "${gengetopt}"; then
