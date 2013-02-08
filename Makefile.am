@@ -8,10 +8,6 @@ SUBDIRS = src
 EXTRA_DIST =
 EXTRA_DIST += .version git-version-gen
 EXTRA_DIST += README.md
-EXTRA_DIST += strerror.spec
-
-rpm: dist-gzip
-	rpmbuild -ta $(distdir).tar.gz
 
 # Version string management.  There are two files to be aware of:
 # .tarball-version - present only in a distribution tarball, and not in
