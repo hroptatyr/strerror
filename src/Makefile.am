@@ -13,6 +13,11 @@ CLEANFILES =
 EXTRA_DIST = $(BUILT_SOURCES)
 
 
+bin_PROGRAMS += strerror
+strerror_SOURCES = strerror.c
+strerror_SOURCES += strerror-clo.ggo
+BUILT_SOURCES += strerror-clo.c strerror-clo.h
+
 
 ## our rule for gengetopt
 %.c %.h: %.ggo
