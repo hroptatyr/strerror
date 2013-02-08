@@ -43,6 +43,10 @@
 /* command line parser */
 #include "strerror-clo.h"
 
+#if !defined HAVE_STRERROR
+# error bad bad luck, mate; contrary to intuition this tool is based on strerror(3)
+#endif	/* !HAVE_STRERROR */
+
 
 #if defined __INTEL_COMPILER
 # pragma warning (disable:593)
