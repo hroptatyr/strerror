@@ -47,6 +47,14 @@
 # error bad bad luck, mate; contrary to intuition this tool is based on strerror(3)
 #endif	/* !HAVE_STRERROR */
 
+#if !defined HAVE_STRERRNO
+static const char*
+strerrno(int x)
+{
+	return "";
+}
+#endif	/* HAVE_STRERRNO */
+
 
 #if defined __INTEL_COMPILER
 # pragma warning (disable:593)
@@ -85,9 +93,17 @@ main(int argc, char *argv[])
 
 	for (unsigned int i = 0; i < argi->inputs_num; i++) {
 		long int x;
+		const char *rnostr;
+		const char *rorstr;
 
-		if ((x = atol(argi->inputs[i]))) {
-			printf("%d\t%s\n", (int)x, strerror(x));
+		if ((x = atol(argi->inputs[i])) <= 0) {
+			;
+		} else if ((rnostr = strerrno(x)) == NULL) {
+			;
+		} else if ((rorstr = strerror(x)) == NULL) {
+			;
+		} else {
+			printf("%ld\t%s\t%s\n", x, rnostr, rorstr);
 		}
 	}
 
