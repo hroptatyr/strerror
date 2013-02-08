@@ -39,6 +39,13 @@ SXE_CHECK_CFLAGS
 
 AC_CHECK_HEADERS([errno.h])
 
+AC_PATH_PROG([GENGETOPT], [gengetopt])
+if test -z "${gengetopt}"; then
+	GENGETOPT="gengetopt"
+fi
+AC_ARG_VAR([GENGETOPT], [full path to the gengetopt tool])
+
+
 dnl -------------------------------------------------------------------------
 dnl final output
 dnl -------------------------------------------------------------------------
