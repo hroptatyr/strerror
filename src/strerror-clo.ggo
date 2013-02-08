@@ -1,0 +1,5 @@
+args "--unamed-opts --no-handle-error --long-help -a strerror_args_info -f strerror_parser"
+package "strerror"
+usage "strerror [OPTION]... ERROR"
+description "Parse ERROR (an errno code or an error literal and print \
+its expansion."
