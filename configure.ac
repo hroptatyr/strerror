@@ -40,6 +40,7 @@ SXE_CHECK_CFLAGS
 AC_CHECK_HEADERS([errno.h])
 AC_CHECK_HEADERS([string.h])
 AC_CHECK_FUNCS([strerror])
+AC_CHECK_FUNCS([strerrno])
 
 AC_PATH_PROG([GENGETOPT], [gengetopt])
 if test -z "${gengetopt}"; then
