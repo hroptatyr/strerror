@@ -537,4 +537,17 @@ Whether sloppy struct initialising works])
 ])dnl SXE_CHECK_SLOPPY_STRUCTS_INIT
 
 
+AC_DEFUN([SXE_CHECK_CPP_DIR_ONLY], [dnl
+	AC_CACHE_VAL([sxe_cv_cpp_flag_directives_only], [dnl
+		save_ac_c_werror_flag="${ac_c_werror_flag}"
+		AC_LANG_WERROR
+		SXE_CHECK_COMPILER_FLAGS([-E -fdirectives-only], [dnl
+			sxe_cv_cpp_flag_directives_only="yes"
+		], [dnl
+			sxe_cv_cpp_flag_directives_only="no"
+		])
+		ac_c_werror_flag="${save_ac_c_werror_flag}"
+	])
+])dnl SXE_CHECK_CPP_DIR_ONLY
+
 dnl sxe-compiler.m4 ends here
