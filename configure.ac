@@ -34,6 +34,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 ## the build chain
 AC_PROG_CC([icc gcc tcc cc])
+AC_PROG_CPP
 SXE_CHECK_CC([c11 c1x c99 gnu99])
 SXE_CHECK_CFLAGS
 
@@ -41,6 +42,12 @@ AC_CHECK_HEADERS([errno.h])
 AC_CHECK_HEADERS([string.h])
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strerrno])
+
+## it would be nice to have a preprocessor with -fdirectives-only
+SXE_CHECK_CPP_FLAGS([-fdirectives-only], [
+	CPPDO="${CPP} -fdirectives-only"
+	AC_SUBST([CPPDO])
+])
 
 AC_PATH_PROG([GENGETOPT], [gengetopt])
 if test -z "${gengetopt}"; then
