@@ -314,6 +314,38 @@ dnl SXE_CHECK_COMPILER_FLAGS([flag], [do-if-works], [do-if-not-works])
 	fi
 ])dnl SXE_CHECK_COMPILER_FLAGS
 
+AC_DEFUN([SXE_CHECK_CPP_FLAGS], [dnl
+dnl SXE_CHECK_CPP_FLAGS([flag], [action-if-found], [action-if-not-found])
+	AC_MSG_CHECKING([whether _AC_LANG preprocessor accepts $1])
+
+	dnl Some hackery here since AC_CACHE_VAL can't handle a non-literal varname:
+	save_ac_c_werror_flag="${ac_c_werror_flag}"
+	AC_LANG_WERROR
+	AS_LITERAL_IF([$1], [
+		AC_CACHE_VAL(AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1), [
+			sxe_save_FLAGS=$[]_AC_LANG_PREFIX[]PPFLAGS
+			_AC_LANG_PREFIX[]PPFLAGS="$1"
+			AC_PREPROC_IFELSE([AC_LANG_PROGRAM()],
+				AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="yes",
+				AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="no")
+			_AC_LANG_PREFIX[]PPFLAGS=$sxe_save_FLAGS])], [
+		sxe_save_FLAGS=$[]_AC_LANG_PREFIX[]PPFLAGS
+		_AC_LANG_PREFIX[]PPFLAGS="$1"
+		AC_PREPROC_IFELSE([AC_LANG_PROGRAM()],
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="yes",
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="no")
+		_AC_LANG_PREFIX[]FLAGS=$sxe_save_FLAGS])
+	eval sxe_check_cpp_flags=$AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)
+	ac_c_werror_flag="${save_ac_c_werror_flag}"
+
+	AC_MSG_RESULT([$sxe_check_cpp_flags])
+	if test "$sxe_check_cpp_flags" = "yes"; then
+		m4_default([$2], :)
+	else
+		m4_default([$3], :)
+	fi
+])dnl SXE_CHECK_CPP_FLAGS
+
 AC_DEFUN([SXE_CHECK_COMPILER_XFLAG], [dnl
 	if test "${XFLAG}" = ""; then
 		SXE_CHECK_COMPILER_FLAGS([-XCClinker -foo], [XFLAG="-XCClinker"])
@@ -535,19 +567,5 @@ Whether sloppy struct initialising works])
 	fi
 	AC_LANG_POP()
 ])dnl SXE_CHECK_SLOPPY_STRUCTS_INIT
-
-
-AC_DEFUN([SXE_CHECK_CPP_DIR_ONLY], [dnl
-	AC_CACHE_VAL([sxe_cv_cpp_flag_directives_only], [dnl
-		save_ac_c_werror_flag="${ac_c_werror_flag}"
-		AC_LANG_WERROR
-		SXE_CHECK_COMPILER_FLAGS([-E -fdirectives-only], [dnl
-			sxe_cv_cpp_flag_directives_only="yes"
-		], [dnl
-			sxe_cv_cpp_flag_directives_only="no"
-		])
-		ac_c_werror_flag="${save_ac_c_werror_flag}"
-	])
-])dnl SXE_CHECK_CPP_DIR_ONLY
 
 dnl sxe-compiler.m4 ends here
