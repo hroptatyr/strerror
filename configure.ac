@@ -67,6 +67,12 @@ if test -z "${GENGETOPT}"; then
 fi
 AC_ARG_VAR([GENGETOPT], [full path to the gengetopt tool])
 
+AC_PATH_PROG([GPERF], [gperf])
+if test -z "${GPERF}"; then
+	GPERF="gpref"
+fi
+AC_ARG_VAR([GPERF], [full path to the gperf tool])
+
 
 dnl -------------------------------------------------------------------------
 dnl final output
