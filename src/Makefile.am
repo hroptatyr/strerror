@@ -19,6 +19,7 @@ strerror_SOURCES += strerror-clo.ggo
 strerror_SOURCES += errno-lit.gperf.in
 BUILT_SOURCES += strerror-clo.c strerror-clo.h
 BUILT_SOURCES += errno-lit.gperf errno-lit.c
+BUILT_SOURCES += strerrno.gperf strerrno.c
 
 errno-lit.gperf: errno-lit.gperf.in errno-lit.def
 	$(AM_V_GEN) $(AWK) '\
@@ -27,6 +28,23 @@ errno-lit.gperf: errno-lit.gperf.in errno-lit.def
     next; \
   } \
   gsub(/[ \t]+/, ", "); \
+} { \
+  print; \
+}' $? > $@
+
+strerrno.gperf: strerrno.gperf.in errno-lit.def
+	$(AM_V_GEN) $(AWK) '\
+/^#define[ \t]+/ { \
+  if (!sub(/^#define[ \t]+E/, "E")) { \
+    next; \
+  } else if (!(x = match($$0, /[ \t]+[0-9]+/))) { \
+    next; \
+  } \
+  len = length($$0); \
+  y = x + match(substr($$0, x, len + 1 - x), /[0-9]+/) - 1; \
+  eno = substr($$0, y, len + 1 - y); \
+  str = substr($$0, 1, x - 1); \
+  $$0 = eno ", \"" str "\""; \
 } { \
   print; \
 }' $? > $@

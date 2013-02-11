@@ -48,10 +48,17 @@
 
 /* errno -> errno literal converter */
 #if !defined HAVE_STRERRNO
+# include "strerrno.c"
+
 static const char*
-strerrno(int x)
+strerrno(const char *eno)
 {
-	return "";
+	const struct strerrno_s *tmp;
+
+	if ((tmp = __strerrno(eno, strlen(eno))) == NULL) {
+		return NULL;
+	}
+	return tmp->str;
 }
 #endif	/* HAVE_STRERRNO */
 
@@ -113,7 +120,8 @@ main(int argc, char *argv[])
 		long int x;
 
 		if ((x = atol(inp)) > 0) {
-			rnostr = strerrno(x);
+			/* reuse inp as stringified number */
+			rnostr = strerrno(inp);
 		} else if ((x = errnostr(inp)) > 0) {
 			rnostr = inp;
 		} else {
