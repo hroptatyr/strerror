@@ -17,6 +17,7 @@ bin_PROGRAMS += strerror
 strerror_SOURCES = strerror.c
 strerror_SOURCES += strerror-clo.ggo
 strerror_SOURCES += errno-lit.gperf.in
+strerror_SOURCES += strerrno.gperf.in
 BUILT_SOURCES += strerror-clo.c strerror-clo.h
 BUILT_SOURCES += errno-lit.gperf errno-lit.c
 BUILT_SOURCES += strerrno.gperf strerrno.c
