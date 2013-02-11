@@ -53,6 +53,7 @@ strerrno.gperf: strerrno.gperf.in errno-lit.def
 errno-lit.def:
 	$(AM_V_GEN) $(CPPDO) $(CPPFLAGS) -imacros errno.h -x c /dev/null \
 		> $@ || rm -f -- $@
+CLEANFILES += errno-lit.def
 
 ## our rule for gengetopt
 %.c %.h: %.ggo
