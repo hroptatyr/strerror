@@ -18,13 +18,12 @@ strerror_SOURCES = strerror.c
 strerror_SOURCES += strerror-clo.ggo
 strerror_SOURCES += errno-lit.gperf.in
 BUILT_SOURCES += strerror-clo.c strerror-clo.h
-
-BUILT_SOURCES += errno-lit.gperf
+BUILT_SOURCES += errno-lit.gperf errno-lit.c
 
 errno-lit.gperf: errno-lit.gperf.in errno-lit.def
 	$(AM_V_GEN) $(AWK) '\
 /^#define[ \t]+/ { \
-  if (!gsub(/^#define[ \t]+E/, "E")) { \
+  if (!sub(/^#define[ \t]+E/, "E")) { \
     next; \
   } \
   gsub(/[ \t]+/, ", "); \
