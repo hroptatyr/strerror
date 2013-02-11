@@ -3,3 +3,7 @@ package "strerror"
 usage "strerror [OPTION]... ERROR"
 description "Parse ERROR (an errno code or an errno literal) and print \
 its expansion."
+
+option "verbose" v
+	"Output errno, the literal and the string expansion"
+	optional

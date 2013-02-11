@@ -9,15 +9,25 @@ Just a nifty variant of `strerror(3)` for occasional usage.
 
     strerror 11
     =>
-      11	EAGAIN	Resource temporarily unavailable
+      Resource temporarily unavailable
 
     strerror ERANGE
+    =>
+      Numerical result out of range
+
+  verbose mode outputs a handy table
+
+    strerror --verbose 11
+    =>
+      11	EAGAIN	Resource temporarily unavailable
+
+    strerror -v ERANGE
     =>
       34	ERANGE	Numerical result out of range
 
   multiple arguments are possible:
 
-    strerror 15 EBUSY
+    strerror -v 15 EBUSY
     =>
       15	ENOTBLK	Block device required
       16	EBUSY	Device or resource busy
