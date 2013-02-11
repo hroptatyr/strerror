@@ -34,6 +34,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 ## the build chain
 AC_PROG_CC([icc gcc tcc cc])
+AC_PROG_CPP
 SXE_CHECK_CC([c11 c1x c99 gnu99])
 SXE_CHECK_CFLAGS
 
@@ -42,11 +43,35 @@ AC_CHECK_HEADERS([string.h])
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strerrno])
 
+## it would be nice to have a preprocessor with -fdirectives-only
+SXE_CHECK_PREPROC_FLAG([-dM])
+SXE_CHECK_PREPROC_FLAG([-fdirectives-only])
+
+if test "${sxe_cv_cpp_flag__dM}" = "yes"; then
+	CPPDO="${CPP} -dM"
+elif test "${sxe_cv_cpp_flag__fdirectives_only}" = "yes"; then
+	CPPDO="${CPP} -fdirectives-only"
+else
+	## fuck fuck fuck
+	AC_MSG_ERROR([C preprocessor must be able to process directives only.
+The icc preprocessor for instance can do that, via -dM.
+Or gcc's preprocessort can do that via -fdirectives-only.
+Try CPP="icc -E" or CPP="gcc -E"
+])
+fi
+AC_SUBST([CPPDO])
+
 AC_PATH_PROG([GENGETOPT], [gengetopt])
-if test -z "${gengetopt}"; then
+if test -z "${GENGETOPT}"; then
 	GENGETOPT="gengetopt"
 fi
 AC_ARG_VAR([GENGETOPT], [full path to the gengetopt tool])
+
+AC_PATH_PROG([GPERF], [gperf])
+if test -z "${GPERF}"; then
+	GPERF="gpref"
+fi
+AC_ARG_VAR([GPERF], [full path to the gperf tool])
 
 
 dnl -------------------------------------------------------------------------

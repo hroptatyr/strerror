@@ -1,0 +1,25 @@
+%{
+#if defined HAVE_CONFIG_H
+# include "config.h"
+#endif  /* HAVE_CONFIG_H */
+#if defined HAVE_ERRNO_H
+# include <errno.h>
+#endif  /* HAVE_ERRNO_H */
+%}
+%7bit
+%readonly-tables
+%switch=1
+%ignore-case
+%enum
+%struct-type
+%define slot-name eno
+%define hash-function-name ____strerrno
+%define lookup-function-name __strerrno
+%null-strings
+
+struct strerrno_s {
+	const char *eno;
+	const char *str;
+};
+
+%%
