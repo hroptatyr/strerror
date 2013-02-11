@@ -41,77 +41,58 @@ AC_DEFUN([SXE_CHECK_COMPILER_FLAG], [dnl
 dnl SXE_CHECK_COMPILER_FLAG([flag], [action-if-accepted], [action-if-not-accepted])
 	AC_MSG_CHECKING([whether _AC_LANG compiler accepts $1])
 
-	pushdef([check_flag], [
-		sxe_save_FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
-		_AC_LANG_PREFIX[]FLAGS="$1"
-		AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
-			AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)="yes",
-			AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)="no")
-		_AC_LANG_PREFIX[]FLAGS=$sxe_save_FLAGS
-	])
-
 	## store werror status, then turn -Werror on
 	save_ac_[]_AC_LANG_ABBREV[]_werror_flag="${ac_[]_AC_LANG_ABBREV[]_werror_flag}"
 	AC_LANG_WERROR
-	dnl Some hackery here since AC_CACHE_VAL can't handle a non-literal varname:
-	AS_LITERAL_IF([$1], [
-		AC_CACHE_VAL(AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1), [dnl
-			check_flag
-		])
-	], [dnl else
-		check_flag
+
+	AC_CACHE_VAL(AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1), [dnl
+		sxe_save_FLAGS="${[]_AC_LANG_PREFIX[]FLAGS}"
+		_AC_LANG_PREFIX[]FLAGS="$1"
+		AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)="yes",
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)="no")
+		_AC_LANG_PREFIX[]FLAGS="${sxe_save_FLAGS}"
 	])
-	eval sxe_check_compiler_flag=$AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)
+	eval sxe_check_flag=$AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]_flag_$1)
 	ac_[]_AC_LANG_ABBREV[]_werror_flag="${save_ac_[]_AC_LANG_ABBREV[]_werror_flag}"
 
-	AC_MSG_RESULT([${sxe_check_compiler_flag}])
-	if test "${sxe_check_compiler_flag}" = "yes"; then
+	AC_MSG_RESULT([${sxe_check_flag}])
+	if test "${sxe_check_flag}" = "yes"; then
 		:
 		$2
 	else
 		:
 		$3
 	fi
-
-	popdef([check_flag])
 ])dnl SXE_CHECK_COMPILER_FLAG
 
 AC_DEFUN([SXE_CHECK_PREPROC_FLAG], [dnl
 dnl SXE_CHECK_CPP_FLAG([flag], [action-if-found], [action-if-not-found])
 	AC_MSG_CHECKING([whether _AC_LANG preprocessor accepts $1])
 
-	pushdef([check_flag], [
-		sxe_save_FLAGS=$[]_AC_LANG_PREFIX[]PPFLAGS
+	## store werror status, then turn -Werror on
+	save_ac_[]_AC_LANG_ABBREV[]_werror_flag="${ac_[]_AC_LANG_ABBREV[]_werror_flag}"
+	AC_LANG_WERROR
+
+	AC_CACHE_VAL(AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1), [dnl
+		sxe_save_FLAGS="${[]_AC_LANG_PREFIX[]PPFLAGS}"
 		_AC_LANG_PREFIX[]PPFLAGS="$1"
 		AC_PREPROC_IFELSE([AC_LANG_PROGRAM()],
-			AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="yes",
-			AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="no")
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="yes",
+			eval AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)="no")
 		_AC_LANG_PREFIX[]PPFLAGS=$sxe_save_FLAGS
 	])
-
-	dnl Some hackery here since AC_CACHE_VAL can't handle a non-literal varname:
-	save_ac_c_werror_flag="${ac_c_werror_flag}"
-	AC_LANG_WERROR
-	AS_LITERAL_IF([$1], [
-		AC_CACHE_VAL(AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1), [dnl
-			check_flag
-		])
-	], [dnl else
-		check_flag
-	])
 	eval sxe_check_flag=$AS_TR_SH(sxe_cv_[]_AC_LANG_ABBREV[]pp_flag_$1)
-	ac_c_werror_flag="${save_ac_c_werror_flag}"
+	ac_[]_AC_LANG_ABBREV[]_werror_flag="${save_ac_[]_AC_LANG_ABBREV[]_werror_flag}"
 
-	AC_MSG_RESULT([$sxe_check_flag])
-	if test "$sxe_check_flags" = "yes"; then
+	AC_MSG_RESULT([${sxe_check_flag}])
+	if test "${sxe_check_flags}" = "yes"; then
 		:
 		$2
 	else
 		:
 		$3
 	fi
-
-	popdef([check_flag])
 ])dnl SXE_CHECK_PREPROC_FLAG
 
 
