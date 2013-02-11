@@ -44,7 +44,7 @@ AC_CHECK_FUNCS([strerror])
 AC_CHECK_FUNCS([strerrno])
 
 ## it would be nice to have a preprocessor with -fdirectives-only
-SXE_CHECK_CPP_FLAGS([-fdirectives-only], [
+SXE_CHECK_PREPROC_FLAG([-fdirectives-only], [
 	CPPDO="${CPP} -fdirectives-only"
 	AC_SUBST([CPPDO])
 ])
