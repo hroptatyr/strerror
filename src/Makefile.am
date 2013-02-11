@@ -9,15 +9,32 @@ lib_LTLIBRARIES =
 noinst_LTLIBRARIES =
 noinst_HEADERS =
 BUILT_SOURCES =
-CLEANFILES =
-EXTRA_DIST = $(BUILT_SOURCES)
+EXTRA_DIST =
+CLEANFILES = $(BUILT_SOURCES)
 
 
 bin_PROGRAMS += strerror
 strerror_SOURCES = strerror.c
 strerror_SOURCES += strerror-clo.ggo
+strerror_SOURCES += errno-lit.gperf.in
 BUILT_SOURCES += strerror-clo.c strerror-clo.h
 
+BUILT_SOURCES += errno-lit.gperf
+
+errno-lit.gperf: errno-lit.gperf.in errno-lit.def
+	$(AM_V_GEN) $(AWK) '\
+/^#define[ \t]+/ { \
+  if (!gsub(/^#define[ \t]+E/, "E")) { \
+    next; \
+  } \
+  gsub(/[ \t]+/, ", "); \
+} { \
+  print; \
+}' $? > $@
+
+errno-lit.def:
+	$(AM_V_GEN) $(CPPDO) $(CPPFLAGS) -imacros errno.h /dev/null \
+		> $@ || rm -f -- $@
 
 ## our rule for gengetopt
 %.c %.h: %.ggo
