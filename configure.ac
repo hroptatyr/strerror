@@ -79,4 +79,5 @@ dnl final output
 dnl -------------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([info/Makefile])
 AC_OUTPUT
