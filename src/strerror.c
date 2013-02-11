@@ -121,15 +121,24 @@ main(int argc, char *argv[])
 
 		if ((x = atol(inp)) > 0) {
 			/* reuse inp as stringified number */
-			rnostr = strerrno(inp);
+			if (argi->verbose_given) {
+				rnostr = strerrno(inp);
+			}
 		} else if ((x = errnostr(inp)) > 0) {
-			rnostr = inp;
-		} else {
-			fprintf(stderr, "cannot check `%s'\n", inp);
+			if (argi->verbose_given) {
+				rnostr = inp;
+			}
+		}
+
+		if (x <= 0 || (rorstr = strerror(x)) == NULL) {
+			fprintf(stderr, "\
+no error string associated with errno %ld (%s)\n", x, inp);
 			continue;
 		}
 
-		if ((rorstr = strerror(x)) != NULL) {
+		if (!argi->verbose_given) {
+			puts(rorstr);
+		} else {
 			printf("%ld\t%s\t%s\n", x, rnostr, rorstr);
 		}
 	}
