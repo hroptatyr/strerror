@@ -46,8 +46,14 @@ AC_CHECK_FUNCS([strerrno])
 ## it would be nice to have a preprocessor with -fdirectives-only
 SXE_CHECK_PREPROC_FLAG([-fdirectives-only], [
 	CPPDO="${CPP} -fdirectives-only"
-	AC_SUBST([CPPDO])
+], [
+	## fuck fuck fuck
+	AC_MSG_ERROR([C preprocessor must be able to process directives only.
+The gcc preprocessor for instance can do that.
+Try CPP="gcc -E".
+])dnl AC_MSG_ERROR
 ])
+AC_SUBST([CPPDO])
 
 AC_PATH_PROG([GENGETOPT], [gengetopt])
 if test -z "${gengetopt}"; then
