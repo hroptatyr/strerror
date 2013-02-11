@@ -62,7 +62,7 @@ fi
 AC_SUBST([CPPDO])
 
 AC_PATH_PROG([GENGETOPT], [gengetopt])
-if test -z "${gengetopt}"; then
+if test -z "${GENGETOPT}"; then
 	GENGETOPT="gengetopt"
 fi
 AC_ARG_VAR([GENGETOPT], [full path to the gengetopt tool])
