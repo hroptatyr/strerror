@@ -86,7 +86,7 @@ dnl SXE_CHECK_CPP_FLAG([flag], [action-if-found], [action-if-not-found])
 	ac_[]_AC_LANG_ABBREV[]_werror_flag="${save_ac_[]_AC_LANG_ABBREV[]_werror_flag}"
 
 	AC_MSG_RESULT([${sxe_check_flag}])
-	if test "${sxe_check_flags}" = "yes"; then
+	if test "${sxe_check_flag}" = "yes"; then
 		:
 		$2
 	else
