@@ -4,6 +4,9 @@
 LANG=C
 LC_ALL=C
 
+EXTRA_DIST =
+
 man1_MANS = strerror.1
+EXTRA_DIST += $(man1_MANS)
 
 ## Makefile.am ends here
