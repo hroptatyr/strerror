@@ -9,15 +9,51 @@ lib_LTLIBRARIES =
 noinst_LTLIBRARIES =
 noinst_HEADERS =
 BUILT_SOURCES =
-CLEANFILES =
-EXTRA_DIST = $(BUILT_SOURCES)
+EXTRA_DIST =
+CLEANFILES = $(BUILT_SOURCES)
 
 
 bin_PROGRAMS += strerror
 strerror_SOURCES = strerror.c
 strerror_SOURCES += strerror-clo.ggo
+strerror_SOURCES += errno-lit.gperf.in
+strerror_SOURCES += strerrno.gperf.in
 BUILT_SOURCES += strerror-clo.c strerror-clo.h
+BUILT_SOURCES += errno-lit.gperf errno-lit.c
+BUILT_SOURCES += strerrno.gperf strerrno.c
 
+errno-lit.gperf: errno-lit.gperf.in errno-lit.def
+	$(AM_V_GEN) $(AWK) '\
+/^#define[ \t]+/ { \
+  if (!sub(/^#define[ \t]+E/, "E")) { \
+    next; \
+  } \
+  gsub(/[ \t]+/, ", "); \
+} { \
+  print; \
+}' $? > $@
+
+strerrno.gperf: strerrno.gperf.in errno-lit.def
+	$(AM_V_GEN) $(AWK) '\
+/^#define[ \t]+/ { \
+  if (!sub(/^#define[ \t]+E/, "E")) { \
+    next; \
+  } else if (!(x = match($$0, /[ \t]+[0-9]+/))) { \
+    next; \
+  } \
+  len = length($$0); \
+  y = x + match(substr($$0, x, len + 1 - x), /[0-9]+/) - 1; \
+  eno = substr($$0, y, len + 1 - y); \
+  str = substr($$0, 1, x - 1); \
+  $$0 = eno ", \"" str "\""; \
+} { \
+  print; \
+}' $? > $@
+
+errno-lit.def:
+	$(AM_V_GEN) $(CPPDO) $(CPPFLAGS) -imacros errno.h -x c /dev/null \
+		> $@ || rm -f -- $@
+CLEANFILES += errno-lit.def
 
 ## our rule for gengetopt
 %.c %.h: %.ggo
@@ -25,7 +61,7 @@ BUILT_SOURCES += strerror-clo.c strerror-clo.h
 
 ## our rule for gperf
 %.c: %.gperf
-	$(AM_V_GEN) $(GPERF) $< --output-file $@
+	$(AM_V_GEN) $(GPERF) -L ANSI-C $< --output-file $@
 
 # 
 # Help the developers get nice post-processed source files

@@ -40,20 +40,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/* command line parser */
-#include "strerror-clo.h"
 
 #if !defined HAVE_STRERROR
 # error bad bad luck, mate; contrary to intuition this tool is based on strerror(3)
 #endif	/* !HAVE_STRERROR */
 
+
+/* errno -> errno literal converter */
 #if !defined HAVE_STRERRNO
+# include "strerrno.c"
+
 static const char*
-strerrno(int x)
+strerrno(const char *eno)
 {
-	return "";
+	const struct strerrno_s *tmp;
+
+	if ((tmp = __strerrno(eno, strlen(eno))) == NULL) {
+		return NULL;
+	}
+	return tmp->str;
 }
 #endif	/* HAVE_STRERRNO */
+
+
+/* errno literal -> errno converter */
+#include "errno-lit.c"
+
+static int
+errnostr(const char lit[static 1])
+{
+	const struct errno_lit_s *tmp;
+
+	if ((tmp = errno_lit(lit, strlen(lit))) == NULL) {
+		return -1;
+	}
+	return tmp->eno;
+}
 
 
 #if defined __INTEL_COMPILER
@@ -92,17 +114,22 @@ main(int argc, char *argv[])
 	}
 
 	for (unsigned int i = 0; i < argi->inputs_num; i++) {
-		long int x;
+		const char *inp = argi->inputs[i];
 		const char *rnostr;
 		const char *rorstr;
+		long int x;
 
-		if ((x = atol(argi->inputs[i])) <= 0) {
-			;
-		} else if ((rnostr = strerrno(x)) == NULL) {
-			;
-		} else if ((rorstr = strerror(x)) == NULL) {
-			;
+		if ((x = atol(inp)) > 0) {
+			/* reuse inp as stringified number */
+			rnostr = strerrno(inp);
+		} else if ((x = errnostr(inp)) > 0) {
+			rnostr = inp;
 		} else {
+			fprintf(stderr, "cannot check `%s'\n", inp);
+			continue;
+		}
+
+		if ((rorstr = strerror(x)) != NULL) {
 			printf("%ld\t%s\t%s\n", x, rnostr, rorstr);
 		}
 	}
