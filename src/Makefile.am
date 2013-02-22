@@ -8,9 +8,11 @@ noinst_PROGRAMS =
 lib_LTLIBRARIES =
 noinst_LTLIBRARIES =
 noinst_HEADERS =
-BUILT_SOURCES =
-EXTRA_DIST =
-CLEANFILES = $(BUILT_SOURCES)
+dist_built_sources =
+nodist_built_sources =
+BUILT_SOURCES = $(dist_built_sources) $(nodist_built_sources)
+EXTRA_DIST = $(dist_built_sources)
+CLEANFILES = $(nodist_built_sources)
 
 
 bin_PROGRAMS += strerror
@@ -18,9 +20,9 @@ strerror_SOURCES = strerror.c
 strerror_SOURCES += strerror-clo.ggo
 strerror_SOURCES += errno-lit.gperf.in
 strerror_SOURCES += strerrno.gperf.in
-BUILT_SOURCES += strerror-clo.c strerror-clo.h
-BUILT_SOURCES += errno-lit.gperf errno-lit.c
-BUILT_SOURCES += strerrno.gperf strerrno.c
+dist_built_sources += strerror-clo.c strerror-clo.h
+nodist_built_sources += errno-lit.gperf errno-lit.c
+nodist_built_sources += strerrno.gperf strerrno.c
 
 errno-lit.gperf: errno-lit.gperf.in errno-lit.def
 	$(AM_V_GEN) $(AWK) '\
