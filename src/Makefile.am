@@ -13,14 +13,14 @@ nodist_built_sources =
 BUILT_SOURCES = $(dist_built_sources) $(nodist_built_sources)
 EXTRA_DIST = $(dist_built_sources)
 CLEANFILES = $(nodist_built_sources)
+SUFFIXES =
 
 
 bin_PROGRAMS += strerror
-strerror_SOURCES = strerror.c
-strerror_SOURCES += strerror-clo.ggo
+strerror_SOURCES = strerror.c strerror.yuck
 strerror_SOURCES += errno-lit.gperf.in
 strerror_SOURCES += strerrno.gperf.in
-dist_built_sources += strerror-clo.c strerror-clo.h
+dist_built_sources += strerror.yucc
 nodist_built_sources += errno-lit.gperf errno-lit.c
 nodist_built_sources += strerrno.gperf strerrno.c
 
@@ -57,12 +57,16 @@ errno-lit.def:
 		> $@ || rm -f -- $@
 CLEANFILES += errno-lit.def
 
-## our rule for gengetopt
-%.c %.h: %.ggo
-	$(AM_V_GEN) $(GENGETOPT) -l -i $< -F $*
+## yuck rule
+SUFFIXES += .yuck
+SUFFIXES += .yucc
+.yuck.yucc:
+	$(AM_V_GEN) PATH=$(top_builddir)/build-aux:"$${PATH}" \
+		yuck$(EXEEXT) gen -o $@ $<
 
 ## our rule for gperf
-%.c: %.gperf
+SUFFIXES += .gperf
+.gperf.c:
 	$(AM_V_GEN) $(GPERF) -L ANSI-C $< --output-file $@
 
 # 

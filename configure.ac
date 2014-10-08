@@ -58,12 +58,6 @@ Try CPP="icc -E" or CPP="gcc -E"
 fi
 AC_SUBST([CPPDO])
 
-AC_PATH_PROG([GENGETOPT], [gengetopt])
-if test -z "${GENGETOPT}"; then
-	GENGETOPT="gengetopt"
-fi
-AC_ARG_VAR([GENGETOPT], [full path to the gengetopt tool])
-
 AC_PATH_PROG([GPERF], [gperf])
 if test -z "${GPERF}"; then
 	GPERF="gperf"
