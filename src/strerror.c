@@ -1,6 +1,6 @@
 /*** strerror.c -- like strerror(3) but for the command line
  *
- * Copyright (C) 2013 Sebastian Freundt
+ * Copyright (C) 2013-2014 Sebastian Freundt
  *
  * Author:  Sebastian Freundt <devel@fresse.org>
  *
@@ -78,54 +78,39 @@ errnostr(const char lit[static 1])
 }
 
 
-#if defined __INTEL_COMPILER
-# pragma warning (disable:593)
-# pragma warning (disable:181)
-#elif defined __GNUC__
-# pragma GCC diagnostic ignored "-Wswitch"
-# pragma GCC diagnostic ignored "-Wswitch-enum"
-#endif /* __INTEL_COMPILER */
-#include "strerror-clo.h"
-#include "strerror-clo.c"
-#if defined __INTEL_COMPILER
-# pragma warning (default:593)
-# pragma warning (default:181)
-#elif defined __GNUC__
-# pragma GCC diagnostic warning "-Wswitch"
-# pragma GCC diagnostic warning "-Wswitch-enum"
-#endif	/* __INTEL_COMPILER */
+#include "strerror.yucc"
 
 int
 main(int argc, char *argv[])
 {
 	/* args */
-	struct strerror_args_info argi[1];
+	yuck_t argi[1U];
 	/* business logic */
 	int res = 0;
 
 	/* parse the command line */
-	if (strerror_parser(argc, argv, argi)) {
+	if (yuck_parse(argi, argc, argv)) {
 		res = 1;
 		goto out;
-	} else if (argi->inputs_num < 1U) {
-		strerror_parser_print_help();
+	} else if (argi->nargs < 1U) {
+		yuck_auto_help(argi);
 		res = 1;
 		goto out;
 	}
 
-	for (unsigned int i = 0; i < argi->inputs_num; i++) {
-		const char *inp = argi->inputs[i];
+	for (size_t i = 0U; i < argi->nargs; i++) {
+		const char *inp = argi->args[i];
 		const char *rnostr;
 		const char *rorstr;
 		long int x;
 
 		if ((x = atol(inp)) > 0) {
 			/* reuse inp as stringified number */
-			if (argi->verbose_given) {
+			if (argi->verbose_flag) {
 				rnostr = strerrno(inp);
 			}
 		} else if ((x = errnostr(inp)) > 0) {
-			if (argi->verbose_given) {
+			if (argi->verbose_flag) {
 				rnostr = inp;
 			}
 		}
@@ -136,7 +121,7 @@ no error string associated with errno %ld (%s)\n", x, inp);
 			continue;
 		}
 
-		if (!argi->verbose_given) {
+		if (!argi->verbose_flag) {
 			puts(rorstr);
 		} else {
 			printf("%ld\t%s\t%s\n", x, rnostr, rorstr);
@@ -144,7 +129,7 @@ no error string associated with errno %ld (%s)\n", x, inp);
 	}
 
 out:
-	strerror_parser_free(argi);
+	yuck_free(argi);
 	return res;
 }
 

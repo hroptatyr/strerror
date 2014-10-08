@@ -1,0 +1,5 @@
+Usage: strerror [OPTION]... ERROR
+
+Parse ERROR (an errno code or an errno literal) and print its expansion.
+
+  -v, --verbose  Output errno, the literal and the string expansion
