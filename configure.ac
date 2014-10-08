@@ -3,7 +3,7 @@ dnl Autoconf startup.
 dnl -------------------------------------------------------------------------
 
 AC_PREREQ([2.63])
-AC_INIT([strerror], [0.1.2.GIT], [https://github.com/hroptatyr/strerror])
+AC_INIT([strerror], [0.1.2], [https://github.com/hroptatyr/strerror])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADER([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])
