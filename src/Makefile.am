@@ -1,4 +1,5 @@
 ### Makefile.am
+include $(top_builddir)/version.mk
 
 AM_CPPFLAGS = -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=600 -D_BSD_SOURCE
 AM_LDFLAGS =
@@ -15,11 +16,16 @@ EXTRA_DIST = $(dist_built_sources)
 CLEANFILES = $(nodist_built_sources)
 SUFFIXES =
 
+CLEANFILES += version.c
+EXTRA_DIST += version.c.in
 
 bin_PROGRAMS += strerror
 strerror_SOURCES = strerror.c strerror.yuck
+strerror_SOURCES += version.c version.h version.c.in
 strerror_SOURCES += errno-lit.gperf.in
 strerror_SOURCES += strerrno.gperf.in
+strerror_CPPFLAGS = $(AM_CPPFLAGS)
+strerror_CPPFLAGS += -DHAVE_VERSION_H
 dist_built_sources += strerror.yucc
 nodist_built_sources += errno-lit.gperf errno-lit.c
 nodist_built_sources += strerrno.gperf strerrno.c
@@ -56,6 +62,12 @@ errno-lit.def:
 	$(AM_V_GEN) $(CPPDO) $(CPPFLAGS) -imacros errno.h -x c /dev/null \
 		> $@ || rm -f -- $@
 CLEANFILES += errno-lit.def
+
+## version rules
+version.c: version.c.in $(top_builddir)/.version
+	$(AM_V_GEN) PATH="$(top_builddir)/build-aux:$${PATH}" \
+		yuck$(EXEEXT) scmver --ignore-noscm --force -o $@ \
+			--use-reference --reference $(top_builddir)/.version $<
 
 ## yuck rule
 SUFFIXES += .yuck

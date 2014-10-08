@@ -26,6 +26,9 @@ AC_COPYRIGHT([dnl
 AM_INIT_AUTOMAKE([foreign dist-xz color-tests parallel-tests])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
+AX_YUCK_SCMVER([version.mk])
+AC_CONFIG_LINKS([GNUmakefile:GNUmakefile])
+
 ## the build chain
 AC_PROG_CC([icc gcc tcc cc])
 AC_PROG_CPP
