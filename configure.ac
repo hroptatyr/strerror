@@ -67,8 +67,6 @@ if test -z "${GPERF}"; then
 fi
 AC_ARG_VAR([GPERF], [full path to the gperf tool])
 
-AM_MISSING_PROG([HELP2MAN], [help2man], ["${missing_dir}"])
-
 
 dnl -------------------------------------------------------------------------
 dnl final output
